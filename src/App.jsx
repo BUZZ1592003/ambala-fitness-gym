@@ -1,121 +1,99 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from 'react'
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import About from './components/About'
+import Programs from './components/Programs'
+import Gallery from './components/Gallery'
+import Transformation from './components/Transformation'
+import Testimonials from './components/Testimonials'
+import Contact from './components/Contact'
+import Footer from './components/Footer'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [members, setMembers] = useState(0)
+  const [coaches, setCoaches] = useState(0)
+  const [sessions, setSessions] = useState(0)
+
+  useEffect(() => {
+    document.title = 'Ambala Fitness Gym | Transform Your Body'
+
+    const revealElements = document.querySelectorAll('.reveal')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 },
+    )
+
+    revealElements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const timers = []
+
+    const animateCounter = (target, setter) => {
+      let value = 0
+      const increment = Math.ceil(target / 60)
+      const timer = setInterval(() => {
+        value += increment
+        if (value >= target) {
+          value = target
+          clearInterval(timer)
+        }
+        setter(value)
+      }, 25)
+
+      timers.push(timer)
+    }
+
+    animateCounter(1200, setMembers)
+    animateCounter(6, setCoaches)
+    animateCounter(14, setSessions)
+
+    return () => timers.forEach((timer) => clearInterval(timer))
+  }, [])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="site-shell">
+      <Navbar />
+      <main>
+        <Hero />
 
-      <div className="ticks"></div>
+        <section className="section stat-band">
+          <article className="stat-card reveal">
+            <h3>{members}+</h3>
+            <p>Member Transformations Driven</p>
+          </article>
+          <article className="stat-card reveal">
+            <h3>{coaches}</h3>
+            <p>Focused Training Coaches</p>
+          </article>
+          <article className="stat-card reveal">
+            <h3>{sessions}</h3>
+            <p>Hours Open Daily</p>
+          </article>
+        </section>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <About />
+        <Programs />
+        <Gallery />
+        <Transformation />
+        <Testimonials />
+        <Contact />
+      </main>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <a href="#contact" className="floating-cta" aria-label="Quick join button">
+        Join Now
+      </a>
+      <Footer />
+    </div>
   )
 }
 
